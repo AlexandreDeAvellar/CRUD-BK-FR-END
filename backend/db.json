@@ -9,6 +9,11 @@
             "id": 2,
             "nome": "Ale 2",
             "email": "ale2@email.com"
+        },
+        {
+            "id": 3,
+            "nome": "Ale 3",
+            "email": "ale3@email.com"
         }
     ]
 }
