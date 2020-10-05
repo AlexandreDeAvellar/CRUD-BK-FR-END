@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import './Nav.css';
 
 export default props =>
@@ -9,7 +10,7 @@ export default props =>
                 Anotado dia: 03-10-20 às 10:52
                 Feito ? Não
             */}
-            <a href="#/"><i className="fa fa-home"></i> Início </a>
-            <a href="#/users"><i className="fa fa-users"></i> Usuários </a>
+            <Link to="/"><i className="fa fa-home"></i> Início </Link>
+            <Link to="/users"><i className="fa fa-users"></i> Usuários </Link>
         </nav>
     </aside>
