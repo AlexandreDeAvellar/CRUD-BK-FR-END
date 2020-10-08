@@ -26,6 +26,12 @@ export default class UserCrud extends Component {
 
     state = { ...initialState };
 
+    componentDidMount() {
+        axios(baseUrl).then(res => {
+            this.setState({ list: res.data });
+        });
+    }
+
     clear() {
         this.setState({ user: initialState.user });
     }
@@ -41,7 +47,7 @@ export default class UserCrud extends Component {
             })
     }
 
-    getUpdatedList(user) {
+    getUpdatedList(user, add = true) {
         // Essa função filter vai verificar se o id dentro de list é diferente do id que veio no parâmetro
         // e se for diferente ele adiciona na const list.
         // Isso é para remover o id de dentro da list. (Acredito que tem outras formas de fazer isso.)
@@ -49,7 +55,7 @@ export default class UserCrud extends Component {
         const list = this.state.list.filter(u => u.id !== user.id)
 
         // Adicionando o usuário na lista de novo na primeira posição.
-        list.unshift(user);
+        if (add) list.unshift(user);
         return list;
     }
 
@@ -57,6 +63,19 @@ export default class UserCrud extends Component {
         const user = { ...this.state.user }
         user[event.target.name] = event.target.value;
         this.setState({ user });
+    }
+
+    load(user) {
+        axios(baseUrl).then(e => {
+            this.setState({ user });
+        });
+    }
+
+    remove(user) {
+        axios.delete(`${baseUrl}/${user.id}`).then(e => {
+            const list = this.getUpdatedList(user, false);
+            this.setState({ list });
+        })
     }
 
     // Criando a função que renderiza o formulário.
@@ -96,11 +115,50 @@ export default class UserCrud extends Component {
         )
     }
 
+    renderTable() {
+        return (
+            <table className="table mt-4">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>NOME</th>
+                        <th>EMAIL</th>
+                        <th>AÇÕES</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {this.renderRow()}
+                </tbody>
+            </table>
+        )
+    }
+
+    renderRow() {
+        return this.state.list.map(user => {
+            return (
+                <tr key={user.id}>
+                    <td>{user.id}</td>
+                    <td>{user.name}</td>
+                    <td>{user.email}</td>
+                    <td>
+                        <button className="btn btn-warning" onClick={() => this.load(user)}>
+                            <i className="fa fa-pencil"></i>
+                        </button>
+                        <button className="btn btn-danger ml-2" onClick={() => this.remove(user)}>
+                            <i className="fa fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            )
+        })
+    }
+
     // Render é a função principal.
     render() {
         return (
             <Main {...headerProps}>
                 {this.renderForm()}
+                {this.renderTable()}
             </Main>
         )
     }
